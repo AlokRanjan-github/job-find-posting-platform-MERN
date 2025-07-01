@@ -1,6 +1,8 @@
-import User from "../models/user.model.js";
+import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
+
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
@@ -13,7 +15,7 @@ export const register = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (user) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "User email already exists",
         success: false,
       });
@@ -31,12 +33,13 @@ export const register = async (req, res) => {
     });
     await newUser.save();
 
-    return res.status(200).json({
-      message: `Account created successfully ${fullname}`,
+    return res.status(201).json({
+      message: `Account created successfully for ${fullname}`,
       success: true,
     });
   } catch (error) {
-    res.send(500).json({
+    console.log(error);
+    res.status(500).json({
       message: "Registration went wrong.Try again",
       success: false,
     });
@@ -47,12 +50,12 @@ export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
     if (!email || !password || !role) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Missing require fields",
         success: false,
       });
     }
-    let user = await User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
         message: "Incorrect email or password",
@@ -81,12 +84,12 @@ export const login = async (req, res) => {
       userId: user._id,
     };
 
-    const token = await jwt.sign(tokenData, process.env.JWT_SECRET, {
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
     // Creating "user" to be stored in cookies
-    user = {
+    const sanitizedUser = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
@@ -101,23 +104,22 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: Strict,
+        sameSite: 'Strict',
       })
       .json({
         message: `Welcome Back ${user.fullname}`,
-        user,
+        user: sanitizedUser,
         success: true,
       });
   } catch (error) {
-    console.log("Login Failed, Try again!", error);
     res.status(500).json({
-      message: "Unautherized User",
+      message: "Login Failed, Try again",
       success: false,
     });
   }
 };
 
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
   try {
     return res.status(200).cookie("token", "", { maxAge: 0 }).json({
       message: "LoggedOut Successfully !",
@@ -161,6 +163,7 @@ export const updateProfile = async (req, res) => {
     user.bio = bio;
     user.skills = skillsArray;
     // resume to be added on later
+
     await user.save();
     user = {
       _id: user._id,
@@ -172,7 +175,7 @@ export const updateProfile = async (req, res) => {
     };
 
     return res.status(200).json({
-      message: "Profile updated Successfully",
+      message: `${user.fullname}, your profile updated successfully`,
       success: true,
     });
   } catch (error) {
