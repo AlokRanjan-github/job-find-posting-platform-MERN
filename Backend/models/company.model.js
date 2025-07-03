@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const companySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     description: {
         type: String,
@@ -11,17 +12,14 @@ const companySchema = new mongoose.Schema({
     },
     website:{
         type: String,
-    },
-    /*
-    website: {
-        type: String,
         validate: {
             validator: function(v) {
                 return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(v);
             },
             message: props => `${props.value} is not a valid URL!`
         }
-    }*/
+    },
+   
     location: {
         type: String,
     },
