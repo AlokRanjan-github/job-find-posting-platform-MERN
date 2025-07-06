@@ -1,82 +1,154 @@
-import Company from "../models/company.model.js";
-export const register = async (req, res) => {
+import { Company } from "../models/company.model.js";
+
+export const registerCompany = async (req, res) => {
   try {
-    const { companyName } = req.body;
+    const { companyName, description, website, location, logo } = req.body;
+
+    // Validate required fields
     if (!companyName) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Company name is required",
         success: false,
       });
     }
-    let company = await Company.findOne({ name: companyName });
-    if (company) {
+
+    if (!description) {
       return res.status(400).json({
-        message: "Company already exists",
+        message: "Description is required",
         success: false,
       });
     }
-    company = await Company.create({
+
+    // Check for existing company with same name
+    const existingCompany = await Company.findOne({ name: companyName });
+    if (existingCompany) {
+      return res.status(400).json({
+        message: "Company name already exists",
+        success: false,
+      });
+    }
+
+    // Create new company
+    const company = await Company.create({
       name: companyName,
-      userId: req.id,
+      description,
+      website,
+      location,
+      logo,
+      userId: req.id, //  Comes from JWT middleware
     });
+
     return res.status(201).json({
-      message: "Company added Successfully",
-      company, // model obect containing all key value pair
+      message: "Company registered successfully",
+      company,
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error registering company Catch block:", error.message);
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "Company name must be unique",
+        success: false,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Server error while registering company",
+      success: false,
+    });
+  }
+};
+
+
+export const getAllCompanies = async (req, res) => {
+  try {
+    const userId = req.id;
+    const companies = await Company.find({ userId });
+    if (companies.length === 0) {
+      return res.status(404).json({
+        message: "No companies found",
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      companies,
       success: true,
     });
   } catch (error) {
     console.error(error);
-  }
-};
-
-export const getAllCompanies = async (req, res) => {
-  try {
-    const userId = req.id; // loggedIn user Id which shows only companies created by that particular user
-    const companies = await Company.find({ userId });
-    if (!companies) {
-      return res.status(404).json({
-        message: "No companies found",
-      });
-    }
-  } catch (error) {
-    console.error(error);
+    return res.status(500).json({
+      message: "Error fetching companies",
+      success: false,
+    });
   }
 };
 
 export const getCompanyById = async (req, res) => {
-  const companyId = req.params.id;
-  const company = await Company.findById(companyId);
-  if (!company) {
-    return res.status(404).json({
-      message: "Company not found",
+  try {
+    const companyId = req.params.id;
+    const company = await Company.findById(companyId);
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found",
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      company,
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error fetching company",
+      success: false,
     });
   }
-  return res.status(200).json({
-    company,
-    success: true,
-  });
 };
 
 // Update company details
 export const updateCompany = async (req, res) => {
   try {
-    const { name, description, website, location } = req.body;
-    const file = req.file;
-    //cloudinary
-    const updateData = { name, description, website, location };
-    const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-    });
-    if (!comapny) {
-      return res.status(404).json({
-        message: "Company not found",
+    const { companyName, description, website, location, logo } = req.body;
+    const updateData = {};
+
+    // Only add fields to updateData if they are provided in the request
+    if (companyName !== undefined) updateData.name = companyName;
+    if (description !== undefined) updateData.description = description;
+    if (website !== undefined) updateData.website = website;
+    if (location !== undefined) updateData.location = location;
+    if (logo !== undefined) updateData.logo = logo;
+
+    // If no fields to update were provided
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        message: "No update data provided",
+        success: false,
       });
     }
+
+    const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true, // This ensures that any mongoose validations are run on update
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found",
+        success: false,
+      });
+    }
+
     return res.status(200).json({
-      message: "Company data Updated",
+      message: "Company data updated successfully",
+      company,
+      success: true,
     });
   } catch (error) {
     console.error(error);
-    return res.status(404).json({ message: "Updating company failed" });
+    return res.status(500).json({
+      message: "Error updating company",
+      success: false,
+    });
   }
 };

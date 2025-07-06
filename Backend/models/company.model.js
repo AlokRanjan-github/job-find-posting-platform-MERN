@@ -1,37 +1,34 @@
 import mongoose from "mongoose";
 
-const companySchema = new mongoose.Schema({
+const companySchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: [true, "Company name is required"],
+      unique: true,
     },
     description: {
-        type: String,
-        required: true
+      type: String,
+      required: [true, "Description is required"],
     },
-    website:{
-        type: String,
-        validate: {
-            validator: function(v) {
-                return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(v);
-            },
-            message: props => `${props.value} is not a valid URL!`
-        }
+    website: {
+      type: String,
     },
-   
     location: {
-        type: String,
+      type: String,
     },
-    logo:{ // url for company logo
-        type: String,
+    logo: {
+      type: String,
     },
-    employees: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Employee",
-        required: true,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-
-},{timestamps: true});
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export const Company = mongoose.model("Company", companySchema);
