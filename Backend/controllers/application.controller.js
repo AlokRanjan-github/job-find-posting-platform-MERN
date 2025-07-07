@@ -1,6 +1,6 @@
 import { application } from "express";
-import {Job } from "../models/job.model.js";
-import {Application } from "../models/application.model.js";
+import { Job } from "../models/job.model.js";
+import { Application } from "../models/application.model.js";
 
 export const applyJob = async (req, res) => {
   try {
@@ -32,7 +32,7 @@ export const applyJob = async (req, res) => {
     }
 
     // create new application
-    const newApplication = new Application({
+    const newApplication = await Application.create({
       job: jobId,
       applicant: userId,
     });
@@ -100,23 +100,28 @@ export const getApplicants = async (req, res) => {
 
 export const updateStatus = async (req, res) => {
   try {
-    const { status } = req.params;
+    const {status } = req.body;
     const applicationId = req.params.id;
+
     if (!status) {
-      return res
-        .status(400)
-        .json({ message: "Invalid status", success: false });
+      return res.status(400).json({
+        message: "Invalid status",
+        success: false,
+      });
     }
-    // find applicant by applicationId
-    const applicantion = await Application.findById({ _id: applicationId });
-    if (!applicantion) {
-      return res
-        .status(404)
-        .json({ message: "Application not found", success: false });
+
+    // Find application by ID
+    const application = await Application.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({
+        message: "Application not found",
+        success: false,
+      });
     }
-    // update status
-    applicantion.status = status.toLowerCase();
-    await applicantion.save();
+
+    // Update status
+    application.status = status.toLowerCase();
+    await application.save();
 
     return res.status(200).json({
       message: "Application status updated successfully",
@@ -130,3 +135,4 @@ export const updateStatus = async (req, res) => {
     });
   }
 };
+
