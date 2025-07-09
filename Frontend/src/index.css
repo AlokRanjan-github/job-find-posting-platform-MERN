@@ -112,9 +112,11 @@
 
 @layer base {
   * {
+    /* stylelint-disable-next-line  */
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* stylelint-disable-next-line  */
+     @apply bg-background text-foreground;
   }
 }
