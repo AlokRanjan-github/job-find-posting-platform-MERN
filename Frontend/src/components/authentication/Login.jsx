@@ -3,9 +3,9 @@ import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "@/components/ui/radio-group";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/data";
+import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
 
 const Login = () => {
@@ -18,7 +18,7 @@ const Login = () => {
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-
+  const navigate = useNavigate();
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -30,12 +30,13 @@ const Login = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        Navigate("/");
+        navigate("/");
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.error("Registration form failed to sumbmit to server:", error);
-      toast.error(error.response.data.message);
+      console.error(error);
+      const errorMessage = error.response ? error.response.data.message : "An unexpected error occurred using toaster";
+      toast.error(errorMessage);
     }
   };
   return (
@@ -55,9 +56,9 @@ const Login = () => {
             <Label className="m-1"> Email Id:</Label>
             <Input
               type="email"
-              value="input.email"
+              value={input.email}
               name="email"
-              onchange={changeEventHandler}
+              onChange={changeEventHandler}
               placeholder="Enter email Id"
             ></Input>
           </div>
@@ -65,9 +66,9 @@ const Login = () => {
             <Label className="m-1"> Password</Label>
             <Input
               type="password"
-              value="input.password"
+              value={input.password}
               name="password"
-              onchange={changeEventHandler}
+              onChange={changeEventHandler}
               placeholder="**********"
             ></Input>
           </div>
@@ -80,7 +81,7 @@ const Login = () => {
                   name="role"
                   value="Student"
                   checked={input.role === "Student"}
-                  onchange={changeEventHandler}
+                  onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
                 <Label htmlFor="r1">Student</Label>
@@ -91,7 +92,7 @@ const Login = () => {
                   name="role"
                   value="Recruiter"
                   checked={input.role === "Recruiter"}
-                  onchange={changeEventHandler}
+                  onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
                 <Label htmlFor="r2">Recruiter</Label>

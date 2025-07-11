@@ -10,14 +10,15 @@ import { toast } from "sonner";
 
 const Register = () => {
   const [input, setInput] = useState({
-    fullName: "",
+    fullname: "",
     email: "",
     password: "",
     role: "",
     phoneNumber: "",
     file: "",
   });
-  const navigate = useNavigate;
+  const navigate = useNavigate();
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -25,10 +26,11 @@ const Register = () => {
   const fileHandler = (e) => {
     setInput({ ...input, file: e.target.files?.[0] });
   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("fullName", input.fullName);
+    formData.append("fullname", input.fullname);
     formData.append("email", input.email);
     formData.append("password", input.password);
     formData.append("role", input.role);
@@ -48,14 +50,15 @@ const Register = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.error("Registration form failed to sumbmit to server:", error);
-      toast.error(error.response.data.message);
+      console.error(error);
+      const errorMessage = error.response ? error.response.data.message : "An unexpected error occurred";
+      toast.error(errorMessage);
     }
   };
+
   return (
     <div>
       <Navbar />
-
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
@@ -68,31 +71,31 @@ const Register = () => {
             <Label className="m-1"> Name</Label>
             <Input
               type="text"
-              value="input.fullName"
-              name="fullName"
-              onchange={changeEventHandler}
+              value={input.fullname}
+              name="fullname"
+              onChange={changeEventHandler}
               placeholder="Enter name"
-            ></Input>
+            />
           </div>
           <div className="my-2">
             <Label className="m-1"> Email Id:</Label>
             <Input
               type="email"
-              value="input.email"
+              value={input.email}
               name="email"
-              onchange={changeEventHandler}
+              onChange={changeEventHandler}
               placeholder="Enter email Id"
-            ></Input>
+            />
           </div>
           <div className="my-2">
             <Label className="m-1"> Password</Label>
             <Input
               type="password"
-              value="input.password"
+              value={input.password}
               name="password"
-              onchange={changeEventHandler}
+              onChange={changeEventHandler}
               placeholder="**********"
-            ></Input>
+            />
           </div>
           <div className="my-2">
             <Label className="m-1"> Mob No.</Label>
@@ -102,10 +105,10 @@ const Register = () => {
               maxLength={10}
               pattern="\d*"
               placeholder="**********"
-              value="input.phoneNumber"
+              value={input.phoneNumber}
               name="phoneNumber"
-              onchange={changeEventHandler}
-            ></Input>
+              onChange={changeEventHandler}
+            />
           </div>
           <div className="flex items-center justify-between">
             <RadioGroup className="flex items-center gap-4 my-5">
@@ -115,25 +118,24 @@ const Register = () => {
                   name="role"
                   value="Student"
                   checked={input.role === "Student"}
-                  onchange={changeEventHandler}
+                  onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
                 <Label htmlFor="r1">Student</Label>
               </div>
-              <div className="flex items-center gap-3 " id="r2">
+              <div className="flex items-center gap-3" id="r2">
                 <Input
                   type="radio"
                   name="role"
                   value="Recruiter"
                   checked={input.role === "Recruiter"}
-                  onchange={changeEventHandler}
+                  onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
                 <Label htmlFor="r2">Recruiter</Label>
               </div>
             </RadioGroup>
           </div>
-
           <div>
             <Label className="m-1">Profile Photo</Label>
             <Input
@@ -142,20 +144,18 @@ const Register = () => {
               onChange={fileHandler}
               placeholder="Choose a photo"
               className="cursor-pointer"
-            ></Input>
+            />
           </div>
-
           <button
             type="submit"
-            className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90  rounded-md"
+            className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90 rounded-md"
           >
             Register
           </button>
           <p className="text-gray-500 text-md my-2 text-center">
-            Already have an account ?{" "}
+            Already have an account?
             <Link to="/login" className="font-semibold text-blue-700">
-              {" "}
-              Login{" "}
+              Login
             </Link>
           </p>
         </form>
