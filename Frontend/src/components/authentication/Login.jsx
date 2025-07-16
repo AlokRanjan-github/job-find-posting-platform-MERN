@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -14,15 +16,19 @@ const Login = () => {
     password: "",
     role: "",
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-  const navigate = useNavigate();
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: {
           "Content-Type": "application/json",
@@ -35,8 +41,12 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      const errorMessage = error.response ? error.response.data.message : "An unexpected error occurred using toaster";
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "An unexpected error occurred using toaster";
       toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
   return (
@@ -100,9 +110,21 @@ const Login = () => {
             </RadioGroup>
           </div>
 
-          <button className="mt-4 block w-full py-3 text-white bg-blue-500 hover:bg-blue-700  rounded-md">
-            Login
-          </button>
+          {loading ? (
+            <div className="w-3/4 py-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-500 hover:bg-blue-800/90 rounded-md">
+              <div
+                className="animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full"
+                role="status"
+              >
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90 rounded-md">
+              Login
+            </button>
+          )}
+
           <p className="text-gray-500 text-md my-2 text-center">
             Create new account ?{" "}
             <Link to="/register" className="font-semibold text-blue-700">

@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import axios from "axios";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -18,6 +20,8 @@ const Register = () => {
     file: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -39,6 +43,7 @@ const Register = () => {
       formData.append("file", input.file);
     }
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -51,8 +56,12 @@ const Register = () => {
       }
     } catch (error) {
       console.error(error);
-      const errorMessage = error.response ? error.response.data.message : "An unexpected error occurred";
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "An unexpected error occurred";
       toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -145,13 +154,25 @@ const Register = () => {
               placeholder="Choose a photo"
               className="cursor-pointer"
             />
+            {loading ? (
+              <div className="w-3/4 py-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-500 hover:bg-blue-800/90 rounded-md">
+                <div
+                  className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"
+                  role="status"
+                >
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90 rounded-md"
+              >
+                Register
+              </button>
+            )}
           </div>
-          <button
-            type="submit"
-            className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90 rounded-md"
-          >
-            Register
-          </button>
+
           <p className="text-gray-500 text-md my-2 text-center">
             Already have an account?
             <Link to="/login" className="font-semibold text-blue-700">
