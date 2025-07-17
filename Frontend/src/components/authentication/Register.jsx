@@ -9,6 +9,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
+import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -155,21 +157,14 @@ const Register = () => {
               className="cursor-pointer"
             />
             {loading ? (
-              <div className="w-3/4 py-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-500 hover:bg-blue-800/90 rounded-md">
-                <div
-                  className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"
-                  role="status"
-                >
-                  <span className="sr-only">Loading...</span>
-                </div>
-              </div>
+              <Button className="w-full my-4">
+                {" "}
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Registering please wait..{" "}
+              </Button>
             ) : (
-              <button
-                type="submit"
-                className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90 rounded-md"
-              >
-                Register
-              </button>
+              <Button type="submit" className="w-full my-4">
+                Signup
+              </Button>
             )}
           </div>
 

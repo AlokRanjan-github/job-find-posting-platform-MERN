@@ -9,6 +9,8 @@ import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
+import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -110,20 +112,7 @@ const Login = () => {
             </RadioGroup>
           </div>
 
-          {loading ? (
-            <div className="w-3/4 py-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-500 hover:bg-blue-800/90 rounded-md">
-              <div
-                className="animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full"
-                role="status"
-              >
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          ) : (
-            <button className="mt-4 block w-full py-3 text-white bg-primary hover:bg-primary/90 rounded-md">
-              Login
-            </button>
-          )}
+          {loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Login</Button>}
 
           <p className="text-gray-500 text-md my-2 text-center">
             Create new account ?{" "}
