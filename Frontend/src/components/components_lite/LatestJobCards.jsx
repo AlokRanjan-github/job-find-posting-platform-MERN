@@ -3,7 +3,7 @@ import React from 'react'
 
 const LatestJobCards = () => {
   return (
-    <div className='m-5/2 border border-gray-200 shadow-xl rounded-md p-6 bg-white transition hover:shadow-lg cursor-pointer' >
+    <div className='m-5/2 border border-gray-200 shadow-lg rounded-md p-6 bg-white transition hover:shadow-xl cursor-pointer' >
         <div>
         <h1 className='font-medium text-lg'>Company Name</h1>
         <p className='text-sm text-gray-500'>India</p>
