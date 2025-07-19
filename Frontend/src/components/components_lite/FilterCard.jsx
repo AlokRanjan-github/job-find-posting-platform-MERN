@@ -22,17 +22,17 @@ const filerData = [
 ];
 const FilterCard = () => {
   return (
-    <div>
-      <h1>Filter Jobs</h1>
+    <div className="w-full bg-white p-3 rounded-md">
+      <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
 
       <RadioGroup>
         {filerData.map((data, index) => (
-          <div>
-            <h1>{data.filerType}</h1>
+          <div key={index}>
+            <h1 className="font-bold text-lg">{data.filerType}</h1>
             {data.array.map((item, index) => {
               return (
-                <div>
+                <div key={index} className="flex items-center space-x-2 my-2">
                   <RadioGroupItem value={item} />
                   <label>{item}</label>
                 </div>
