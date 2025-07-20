@@ -2,7 +2,6 @@ import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
@@ -100,7 +99,7 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'Strict',
+        sameSite: "Strict",
       })
       .json({
         message: `Welcome Back ${user.fullname}`,
@@ -108,7 +107,7 @@ export const login = async (req, res) => {
         success: true,
       });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     res.status(500).json({
       message: "Login Failed, Try again",
       success: false,
@@ -116,17 +115,16 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const updateprofile = async (req, res) => {
   try {
     const { fullname, email, password, phoneNumber, bio, skills } = req.body;
     const file = req.file;
-    
+
     // cloudinary upload
-    
+
     // const skillsArray = skills.split(",");
     const userId = req.id; // middleware authentication
-    
+
     let user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -134,7 +132,7 @@ export const updateprofile = async (req, res) => {
         success: false,
       });
     }
-    
+
     if (fullname) user.fullname = fullname;
     if (email) user.email = email;
     if (password) {
@@ -145,7 +143,7 @@ export const updateprofile = async (req, res) => {
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skills.split(",");
     // resume to be added on later
-    
+
     await user.save();
 
     let sanitizedUser = {
@@ -155,16 +153,17 @@ export const updateprofile = async (req, res) => {
       role: user.role,
       profile: user.profile,
     };
-    
-    
+
     return res.status(200).json({
       message: `${sanitizedUser.fullname}, your profile updated successfully`,
       success: true,
     });
   } catch (error) {
+    console.error("Error in updateprofile route:", error); 
     return res.status(500).json({
       message: "Server Error in updating profile",
       success: false,
+      error: error.message,
     });
   }
 };

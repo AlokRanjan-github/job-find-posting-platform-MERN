@@ -43,7 +43,7 @@ const Job = () => {
             <Badge className='text-[#7209B7] font-bold' variant='ghost'>12LPA</Badge>
         </div>
         <div className="flex items-center gap-4 mt-4">
-            <Button onClick={()=>navigate(`description/${jobId}`)} variant='outline' >Details</Button>
+            <Button onClick={()=>navigate(`/description/${jobId}`)} variant='outline' >Details</Button>
             <Button className='bg-[#6A38C2]' >Save for later</Button>
         </div>
     </div>

@@ -12,12 +12,12 @@ dotenv.config();
 const app = express();
 
 // Checking running of server
-app.get("/",(req,res)=>{
-    return res.status(200).json({
-        message:"Welcome to APIs",
-        timestamp: new Date().toISOString(),
-        success: true,
-    });
+app.get("/", (req, res) => {
+  return res.status(200).json({
+    message: "Welcome to APIs",
+    timestamp: new Date().toISOString(),
+    success: true,
+  });
 });
 
 // creating middleware
@@ -33,9 +33,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // API's
-app.use("/api/user",userRoute);
-app.use("/api/company",companyRoute);
-app.use("/api/job",jobRoute);
+app.use("/api/user", userRoute);
+app.use("/api/company", companyRoute);
+app.use("/api/job", jobRoute);
 app.use("/api/application", applicationRoute);
 
 const port = process.env.PORT || 5000;
