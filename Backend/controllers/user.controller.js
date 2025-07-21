@@ -157,6 +157,7 @@ export const updateprofile = async (req, res) => {
     return res.status(200).json({
       message: `${sanitizedUser.fullname}, your profile updated successfully`,
       success: true,
+      user: sanitizedUser,
     });
   } catch (error) {
     console.error("Error in updateprofile route:", error); 

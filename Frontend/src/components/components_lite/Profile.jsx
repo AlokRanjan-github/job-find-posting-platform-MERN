@@ -7,10 +7,12 @@ import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
+import { useSelector } from "react-redux";
 
 const isResume = true;
-const skills = ["HTML", "CSS", "Javscript", "REactJs", "Express", "MongoDB"];
+// const skills = ["HTML", "CSS", "Javscript", "REactJs", "Express", "MongoDB"];
 function Profile() {
+  const { user } = useSelector((store) => store.auth);
   const [open, setOpen] = useState(false);
   return (
     <div>
@@ -22,11 +24,8 @@ function Profile() {
               <AvatarImage src="../../../public/profilePic.jpg" alt="profile" />
             </Avatar>
             <div>
-              <h1 className="font-medium text-xl">Full Name</h1>
-              <p className="text-gray-500">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Pariatur, accusamus!
-              </p>
+              <h1 className="font-medium text-xl">{user?.fullname}</h1>
+              <p className="text-gray-500">{user?.profile?.bio}</p>
             </div>
           </div>
           <Button
@@ -39,18 +38,18 @@ function Profile() {
         </div>
         <div className="my-3">
           <div className="flex items-center gap-3 m-1">
-            <Mail /> <span>alok@gmail.com</span>
+            <Mail /> <span>{user?.email}</span>
           </div>
           <div className="flex items-center gap-3 m-1">
-            <Contact /> <span>1234567890</span>
+            <Contact /> <span>{user?.phoneNumber}</span>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 my-5">
           <h1 className="text-xl font-semibold ">Skills</h1>
           <div className="flex flex-wrap gap-3">
-            {skills.length !== 0 ? (
-              skills.map((skill, index) => (
+            {user?.profile?.skills.length !== 0 ? (
+              user?.profile?.skills.map((skill, index) => (
                 <Badge className="p-2" key={index}>
                   {skill}
                 </Badge>

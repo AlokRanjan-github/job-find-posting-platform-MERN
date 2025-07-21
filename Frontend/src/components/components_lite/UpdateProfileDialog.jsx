@@ -49,6 +49,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
+    
+
     if (input.file) {
       formData.append("file", input.file);
     }
@@ -64,6 +66,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
       );
 
       if (res.data.success) {
+        console.log("Updated user received from backend:", res.data.user);
         dispatch(setUser(res.data.user));
         toast.success(res.data.message);
       }
