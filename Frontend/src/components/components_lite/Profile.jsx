@@ -8,11 +8,13 @@ import { Label } from "../ui/label";
 import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
+import profilePic from "../../assets/profilePic.jpg";
 
-const isResume = true;
 // const skills = ["HTML", "CSS", "Javscript", "REactJs", "Express", "MongoDB"];
 function Profile() {
   const { user } = useSelector((store) => store.auth);
+  const isResume = !!user?.profile?.resumeOriginalname;
+  
   const [open, setOpen] = useState(false);
   return (
     <div>
@@ -21,7 +23,7 @@ function Profile() {
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-24 w-24">
-              <AvatarImage src="../../../public/profilePic.jpg" alt="profile" />
+              <AvatarImage src={profilePic} alt="profile" />
             </Avatar>
             <div>
               <h1 className="font-medium text-xl">{user?.fullname}</h1>
@@ -65,10 +67,10 @@ function Profile() {
           {isResume ? (
             <a
               target="_blank"
-              href="https://youtube.com/"
+              href={user?.profile?.resume}
               className="text-blue-500 w-full hover:underline cursor-pointer"
             >
-              Open Resume
+              {user?.profile?.resumeOriginalname}
             </a>
           ) : (
             <span>No Resume uploaded</span>

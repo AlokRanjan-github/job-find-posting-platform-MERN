@@ -1,16 +1,24 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
+import path from "path";
 
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
+    console.log("Incoming form fields:", req.body);
+    console.log("Uploaded file:", req.file);
     if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(404).json({
         message: "Missing require fields",
         success: false,
       });
     }
+    const file = req.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     const user = await User.findOne({ email });
     if (user) {
@@ -29,6 +37,9 @@ export const register = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       role,
+      profile: {
+        profilePhoto: cloudResponse.secure_url,
+      },
     });
     await newUser.save();
 
@@ -119,10 +130,31 @@ export const updateprofile = async (req, res) => {
   try {
     const { fullname, email, password, phoneNumber, bio, skills } = req.body;
     const file = req.file;
+    console.log("File details: " + file);
 
     // cloudinary upload
+    // const fileUri = getDataUri(file);
+    // const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+    //   resource_type: "raw",
+    //   access_mode: "public",
+    //   folder: "resumes",
+    // });
 
-    // const skillsArray = skills.split(",");
+    const fileUri = getDataUri(file);
+
+    // Extract file extension and name
+    const originalName = file.originalname; 
+    const extension = path.extname(originalName); 
+    const baseName = path.basename(originalName, extension); 
+
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+      resource_type: "raw",
+      access_mode: "public",
+      folder: "resumes",
+      type: "upload",
+      public_id: `${baseName}${extension}`, 
+    });
+
     const userId = req.id; // middleware authentication
 
     let user = await User.findById(userId);
@@ -143,6 +175,10 @@ export const updateprofile = async (req, res) => {
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skills.split(",");
     // resume to be added on later
+    if (cloudResponse) {
+      user.profile.resume = cloudResponse.secure_url; // save the cloudinary url
+      user.profile.resumeOriginalname = file.originalname; // saves the org file name
+    }
 
     await user.save();
 
@@ -160,7 +196,7 @@ export const updateprofile = async (req, res) => {
       user: sanitizedUser,
     });
   } catch (error) {
-    console.error("Error in updateprofile route:", error); 
+    console.error("Error in updateprofile route:", error);
     return res.status(500).json({
       message: "Server Error in updating profile",
       success: false,
@@ -176,7 +212,7 @@ export const logout = async (req, res) => {
     });
   } catch (error) {
     return res.send(500).json({
-      message: "Loggout Failed, Try Again",
+      message: "Logout Failed, Try Again",
       success: false,
     });
   }

@@ -21,6 +21,7 @@ const Register = () => {
     phoneNumber: "",
     file: "",
   });
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((store) => store.auth);
@@ -36,6 +37,9 @@ const Register = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+    if (input.fullname.length < 4) {
+      return toast.error("Full name must be at least 4 characters");
+    }
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
     formData.append("password", input.password);
@@ -159,7 +163,8 @@ const Register = () => {
             {loading ? (
               <Button className="w-full my-4">
                 {" "}
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Registering please wait..{" "}
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Registering
+                please wait..{" "}
               </Button>
             ) : (
               <Button type="submit" className="w-full my-4">
@@ -169,9 +174,9 @@ const Register = () => {
           </div>
 
           <p className="text-gray-500 text-md my-2 text-center">
-            Already have an account? 
+            Already have an account?
             <Link to="/login" className="font-semibold text-blue-700">
-               Login
+              Login
             </Link>
           </p>
         </form>
