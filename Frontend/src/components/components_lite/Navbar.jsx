@@ -41,15 +41,28 @@ const Navbar = () => {
 
         <div className="flex items-center gap-10">
           <ul className="flex font-medium items-center gap-6">
-            <li className="hover:cursor-pointer">
-              <Link to="/">Home</Link>
-            </li>
-            <li className="hover:cursor-pointer">
-              <Link to="/jobs">Jobs</Link>
-            </li>
-            <li className="hover:cursor-pointer">
-              <Link to="/browse">Browse</Link>
-            </li>
+            {user && user.role === "Recruiter" ? (
+              <>
+                <li className="hover:cursor-pointer">
+                  <Link to="/admin/companies">Companies</Link>
+                </li>
+                <li className="hover:cursor-pointer">
+                  <Link to="/admin/jobs">Jobs</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="hover:cursor-pointer">
+                  <Link to="/">Home</Link>
+                </li>
+                <li className="hover:cursor-pointer">
+                  <Link to="/jobs">Jobs</Link>
+                </li>
+                <li className="hover:cursor-pointer">
+                  <Link to="/browse">Browse</Link>
+                </li>
+              </>
+            )}
           </ul>
           {!user ? (
             <div className="">
@@ -84,13 +97,16 @@ const Navbar = () => {
                   </div>
                 </div>
                 <div className="flex flex-col my-2 text-gray-600">
-                  <div className="flex w-fit items-center cursor-pointer ">
-                    <User2></User2>
-                    <Button variant="link">
-                      {" "}
-                      <Link to="/profile">Profile</Link>
-                    </Button>
-                  </div>
+                  {user && user.role === "Student" && (
+                    <div className="flex w-fit items-center cursor-pointer ">
+                      <User2></User2>
+                      <Button variant="link">
+                        {" "}
+                        <Link to="/profile">Profile</Link>
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="flex w-fit items-center cursor-pointer ">
                     <LogOut></LogOut>
                     <Button variant="link" onClick={logoutHandler}>
