@@ -81,7 +81,7 @@ const CompanySetup = () => {
   return (
     <div>
       <Navbar />
-      <div className="border border-gray-500 max-w-xl mx-auto my-10 p-3 rounded-md">
+      <div className="border border-gray-400 max-w-xl mx-auto my-10 p-3 rounded-md shadow-xl">
         <form onSubmit={submitHandler}>
           <div className="flex items-center justify-between gap-5 p-5">
             <Button
@@ -160,6 +160,6 @@ const CompanySetup = () => {
       </div>
     </div>
   );
-};
+}; 
 
 export default CompanySetup;

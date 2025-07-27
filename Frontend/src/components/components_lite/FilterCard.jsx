@@ -22,7 +22,7 @@ const filerData = [
 ];
 const FilterCard = () => {
   return (
-    <div className="w-full bg-white p-3 rounded-md">
+    <div className="w-full bg-white p-4 rounded-md border border-gray-200 shadow-lg">
       <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
 

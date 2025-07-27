@@ -9,9 +9,11 @@ import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import { useSelector } from "react-redux";
 import profilePic from "../../assets/profilePic.jpg";
+import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
 
 // const skills = ["HTML", "CSS", "Javscript", "REactJs", "Express", "MongoDB"];
 function Profile() {
+  useGetAppliedJobs();
   const { user } = useSelector((store) => store.auth);
   const isResume = !!user?.profile?.resumeOriginalname;
   
@@ -19,11 +21,11 @@ function Profile() {
   return (
     <div>
       <Navbar />
-      <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8">
+      <div className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-2xl my-5 p-8 shadow-lg">
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={profilePic} alt="profile" />
+              <AvatarImage className='rounded-2xl' src={user?.profile?.profilePhoto || profilePic} alt="profile" />
             </Avatar>
             <div>
               <h1 className="font-medium text-xl">{user?.fullname}</h1>
@@ -78,7 +80,7 @@ function Profile() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8">
+      <div className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-2xl my-5 p-8 shadow-xl">
         <h1 className="text-xl font-semibold ">Applied Jobs</h1>
 
         <AppliedJobTable />

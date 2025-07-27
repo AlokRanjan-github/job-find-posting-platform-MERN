@@ -14,7 +14,7 @@ const LatestJobs = () => {
         {allJobs.length > 0 ? (
           allJobs
             ?.slice(0, 6)
-            .map((job) => <LatestJobCards key={job?._id} job={job} />)
+            .map((job) => <LatestJobCards key={job?._id} job={job}  />)
         ) : (
           <span>No Job Available</span>
         )}
