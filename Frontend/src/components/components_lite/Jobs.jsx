@@ -32,7 +32,14 @@ const Jobs = () => {
       <div className="max-w-7xl mx-auto mt-5">
         <div className="flex gap-5">
           <div className="w-20%">
-            <FilterCard />
+            <motion.div
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              transition={{ duration: 0.3 }}
+            >
+              <FilterCard />
+            </motion.div>
           </div>
           {filterJobs.length <= 0 ? (
             <span>Job not found</span>

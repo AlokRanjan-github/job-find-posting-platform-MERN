@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import useGetAllJobs from "@/hooks/useGetAllJobs";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {motion} from 'framer-motion';
 
 const Home = () => {
   useGetAllJobs();
@@ -16,13 +17,20 @@ const Home = () => {
     if (user?.role === "Recruiter") {
       navigate("/admin/companies");
     }
-  }, [user,navigate]);
+  }, [user, navigate]);
   return (
     <div>
       <Navbar />
-      <Header />
-      <Categories />
-      <LatestJobs />
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <Header />
+        <Categories />
+        <LatestJobs />
+      </motion.div>
       <Footer />
     </div>
   );

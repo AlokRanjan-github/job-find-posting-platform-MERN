@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { setUser } from "@/redux/authSlice";
 import axios from "axios";
+import jobHiveLogo from "../../assets/jobHive.png";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
@@ -31,10 +32,15 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-white m-2">
+    <div className= " m-1 p-3 bg-gray-100">
       <div className="flex items-center justify-between mx-auto max-w-7xl">
-        <div>
-          <h1 className="text-2xl font-bold">
+        <div className="flex items-center space-x-2">
+          <img
+            src={jobHiveLogo}
+            alt="JobHive Logo"
+            className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full object-contain"
+          />
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight">
             Job<span className="text-[#F83002]">Hive</span>
           </h1>
         </div>
@@ -43,22 +49,22 @@ const Navbar = () => {
           <ul className="flex font-medium items-center gap-6">
             {user && user.role === "Recruiter" ? (
               <>
-                <li className="hover:cursor-pointer">
+                <li className="hover:cursor-pointer font-semibold">
                   <Link to="/admin/companies">Companies</Link>
                 </li>
-                <li className="hover:cursor-pointer">
+                <li className="hover:cursor-pointer font-semibold">
                   <Link to="/admin/jobs">Jobs</Link>
                 </li>
               </>
             ) : (
               <>
-                <li className="hover:cursor-pointer">
+                <li className="hover:cursor-pointer font-semibold text-lg">
                   <Link to="/">Home</Link>
                 </li>
-                <li className="hover:cursor-pointer">
+                <li className="hover:cursor-pointer font-semibold text-lg">
                   <Link to="/jobs">Jobs</Link>
                 </li>
-                <li className="hover:cursor-pointer">
+                <li className="hover:cursor-pointer font-semibold text-lg">
                   <Link to="/browse">Browse</Link>
                 </li>
               </>

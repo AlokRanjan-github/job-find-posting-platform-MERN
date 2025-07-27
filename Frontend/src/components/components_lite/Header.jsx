@@ -43,9 +43,9 @@ const Header = () => {
           />
           <Button
             onClick={searchJobHandler}
-            className="rounded-full bg-[#6A38C2] hover:bg-blue-900 text-white px-4 py-2"
+            className="rounded-full bg-[#6A38C2] hover:bg-blue-900 text-white "
           >
-            <Search className="h-5 w-5" />
+            <Search />
           </Button>
         </div>
       </div>

@@ -29,11 +29,7 @@ const Footer = () => {
                 Jobs
               </Link>
             </li>
-            <li>
-              <Link to="/post-job" className="hover:text-white">
-                Post a Job
-              </Link>
-            </li>
+            
             <li>
               <Link to="/about" className="hover:text-white">
                 About Us
