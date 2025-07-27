@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { setUser } from "@/redux/authSlice";
 import axios from "axios";
-import jobHiveLogo from "../../assets/jobHive.png";
+import jobHiveLogo from "../../assets/JobHive.png";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
