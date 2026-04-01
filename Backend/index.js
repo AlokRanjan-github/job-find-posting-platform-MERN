@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: ["https://jobhive-in.vercel.app/", "http://localhost:5173"],
+  origin: ["https://jobhive-in.vercel.app", "http://localhost:5173"],
   credentials: true,
 };
 
