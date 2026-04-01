@@ -73,7 +73,7 @@ export const getAllJobs = async (req, res) => {
       .populate({
         path: "company",
       })
-      .sort({ created_at: -1 });
+      .sort({ createdAt: -1 });
     if (!jobs) {
       return res.status(404).json({ message: "No jobs found", success: false });
     }
@@ -111,8 +111,7 @@ export const getAdminJobs = async (req, res) => {
     const adminId = req.id; // getting id from middleware authentication
     const jobs = await Job.find({ created_by: adminId }).populate({
       path: "company",
-      createdAt:-1,
-    });
+    }).sort({ createdAt: -1 });
     if (!jobs) {
       return res.status(404).json({ message: "No jobs found", success: false });
     }
@@ -122,5 +121,73 @@ export const getAdminJobs = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Server Error in fetching admin jobs", success: false });
+  }
+};
+
+// Save/Unsave job
+export const saveJob = async (req, res) => {
+  try {
+    const userId = req.id;
+    const jobId = req.params.id;
+
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found", success: false });
+    }
+
+    const isJobSaved = user.profile.savedJobs.includes(jobId);
+    if (isJobSaved) {
+      // Unsave the job
+      user.profile.savedJobs = user.profile.savedJobs.filter(
+        (id) => id.toString() !== jobId
+      );
+      await user.save();
+      return res.status(200).json({
+        message: "Job removed from saved jobs",
+        success: true,
+        action: "unsaved",
+      });
+    } else {
+      // Save the job
+      user.profile.savedJobs.push(jobId);
+      await user.save();
+      return res.status(200).json({
+        message: "Job saved for later",
+        success: true,
+        action: "saved",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Server Error in saving job", success: false });
+  }
+};
+
+// Get Saved Jobs
+export const getSavedJobs = async (req, res) => {
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId).populate({
+      path: "profile.savedJobs",
+      populate: {
+        path: "company",
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found", success: false });
+    }
+
+    return res.status(200).json({
+      savedJobs: user.profile.savedJobs,
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Server Error in fetching saved jobs", success: false });
   }
 };

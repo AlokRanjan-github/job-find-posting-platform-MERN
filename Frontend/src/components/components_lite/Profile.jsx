@@ -24,8 +24,12 @@ function Profile() {
       <div className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-2xl my-5 p-8 shadow-lg">
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
-            <Avatar className="h-24 w-24">
-              <AvatarImage className='rounded-2xl' src={user?.profile?.profilePhoto || profilePic} alt="profile" />
+            <Avatar className="h-24 w-24 overflow-hidden rounded-full border-2 border-gray-200">
+              <AvatarImage
+                className="h-full w-full object-cover"
+                src={user?.profile?.profilePhoto || profilePic}
+                alt="profile"
+              />
             </Avatar>
             <div>
               <h1 className="font-medium text-xl">{user?.fullname}</h1>

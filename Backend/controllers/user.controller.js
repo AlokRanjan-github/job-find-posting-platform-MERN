@@ -8,27 +8,32 @@ import path from "path";
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
-    console.log("Incoming form fields:", req.body);
-    console.log("Uploaded file:", req.file);
+    
     if (!fullname || !email || !phoneNumber || !password || !role) {
-      return res.status(404).json({
-        message: "Missing require fields",
+      return res.status(400).json({
+        message: "Missing required fields",
         success: false,
       });
     }
+
     const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    let profilePhoto = "";
+
+    if (file) {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        profilePhoto = cloudResponse.secure_url;
+    }
 
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "User email already exists",
         success: false,
       });
     }
 
-    //Coverting password to Hash of length 10
+    //Conversting password to Hash of length 10
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -38,7 +43,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       role,
       profile: {
-        profilePhoto: cloudResponse.secure_url,
+        profilePhoto: profilePhoto,
       },
     });
     await newUser.save();
@@ -48,10 +53,11 @@ export const register = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Registration error:", error);
     res.status(500).json({
-      message: "Registration went wrong.Try again",
+      message: "Registration went wrong. Try again.",
       success: false,
+      error: error.message
     });
   }
 };

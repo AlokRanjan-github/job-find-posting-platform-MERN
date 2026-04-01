@@ -17,6 +17,7 @@ import PostJob from "./components/admin/PostJob";
 import Applicants from "./components/admin/Applicants";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import AboutUs from "./components/components_lite/AboutUs";
+import SavedJobs from "./components/components_lite/SavedJobs";
 
 const appRouter = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const appRouter = createBrowserRouter([
   {
     path: "/browse",
     element: <Browse />,
+  },
+  {
+    path: "/saved",
+    element: <SavedJobs />,
   },
   {
     path: "/profile",

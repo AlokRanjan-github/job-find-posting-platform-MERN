@@ -2,7 +2,7 @@ import React from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
-import { LogOut, User2 } from "lucide-react";
+import { Bookmark, LogOut, User2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -67,6 +67,9 @@ const Navbar = () => {
                 <li className="hover:cursor-pointer font-semibold text-lg">
                   <Link to="/browse">Browse</Link>
                 </li>
+                <li className="hover:cursor-pointer font-semibold text-lg">
+                  <Link to="/saved">Saved</Link>
+                </li>
               </>
             )}
           </ul>
@@ -104,13 +107,21 @@ const Navbar = () => {
                 </div>
                 <div className="flex flex-col my-2 text-gray-600">
                   {user && user.role === "Student" && (
-                    <div className="flex w-fit items-center cursor-pointer ">
-                      <User2></User2>
-                      <Button variant="link">
-                        {" "}
-                        <Link to="/profile">Profile</Link>
-                      </Button>
-                    </div>
+                    <>
+                      <div className="flex w-fit items-center cursor-pointer ">
+                        <User2></User2>
+                        <Button variant="link">
+                          {" "}
+                          <Link to="/profile">Profile</Link>
+                        </Button>
+                      </div>
+                      <div className="flex w-fit items-center cursor-pointer ">
+                        <Bookmark className="w-4 h-4"></Bookmark>
+                        <Button variant="link">
+                          <Link to="/saved">Saved Jobs</Link>
+                        </Button>
+                      </div>
+                    </>
                   )}
 
                   <div className="flex w-fit items-center cursor-pointer ">
