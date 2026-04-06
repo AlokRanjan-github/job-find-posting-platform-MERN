@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Job from './Job';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '@/lib/axios';
 import { JOB_API_ENDPOINT } from '@/utils/data';
 import { motion } from 'framer-motion';
 
@@ -13,9 +12,7 @@ const SavedJobs = () => {
     useEffect(() => {
         const fetchSavedJobs = async () => {
             try {
-                const res = await axios.get(`${JOB_API_ENDPOINT}/savedjobs`, {
-                    withCredentials: true
-                });
+                const res = await api.get(`${JOB_API_ENDPOINT}/savedjobs`);
                 if (res.data.success) {
                     setSavedJobs(res.data.savedJobs);
                 }

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { setUser } from "@/redux/authSlice";
-import axios from "axios";
+import api from "@/lib/axios";
 import jobHiveLogo from "../../assets/JobHive.png";
 
 const Navbar = () => {
@@ -17,22 +17,21 @@ const Navbar = () => {
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
-      const res = await axios.post(`${USER_API_ENDPOINT}/logout`, {
-        withCredentials: true,
-      });
+      const res = await api.post(`${USER_API_ENDPOINT}/logout`);
       if (res.data.success) {
+        localStorage.removeItem("token");
         dispatch(setUser(null));
         navigate("/");
         toast.success(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Logout failed");
     }
   };
 
   return (
-    <div className= " m-1 p-3 bg-gray-100">
+    <div className=" m-1 p-3 bg-gray-100">
       <div className="flex items-center justify-between mx-auto max-w-7xl">
         <div className="flex items-center space-x-2">
           <img

@@ -4,7 +4,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "@/lib/axios";
 import { USER_API_ENDPOINT } from "@/utils/data.js";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,13 +31,16 @@ const Login = () => {
 
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
+      const res = await api.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true,
       });
       if (res.data.success) {
+        // Store JWT token in localStorage for cross-origin auth
+        if (res.data.token) {
+          localStorage.setItem("token", res.data.token);
+        }
         dispatch(setUser(res.data.user));
         navigate("/");
         toast.success(res.data.message);

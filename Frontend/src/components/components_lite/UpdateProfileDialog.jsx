@@ -12,7 +12,7 @@ import { Input } from "../ui/input";
 import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import api from "@/lib/axios";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
@@ -49,19 +49,18 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("bio", input.bio);
     formData.append("skills", input.skills);
-    
+
 
     if (input.file) {
       formData.append("file", input.file);
     }
 
     try {
-      const res = await axios.post(
+      const res = await api.post(
         `${USER_API_ENDPOINT}/profile/update`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
         }
       );
 

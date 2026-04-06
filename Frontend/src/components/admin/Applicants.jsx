@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Navbar from '../components_lite/Navbar'
 import ApplicantsTable from './ApplicantsTable'
-import axios from 'axios';
+import api from '@/lib/axios';
 import { APPLICATION_API_ENDPOINT } from '../../utils/data.js';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ const Applicants = () => {
     useEffect(() => {
         const fetchAllApplicants = async () => {
             try {
-                const res = await axios.get(`${APPLICATION_API_ENDPOINT}/${params.id}/applicants`, { withCredentials: true });
+                const res = await api.get(`${APPLICATION_API_ENDPOINT}/${params.id}/applicants`);
                 dispatch(setAllApplicants(res.data.job));
             } catch (error) {
                 console.log(error);

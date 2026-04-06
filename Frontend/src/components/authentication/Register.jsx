@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import { USER_API_ENDPOINT } from "@/utils/data";
-import axios from "axios";
+import api from "@/lib/axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
@@ -50,11 +50,10 @@ const Register = () => {
     }
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
+      const res = await api.post(`${USER_API_ENDPOINT}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials: true,
       });
       if (res.data.success) {
         navigate("/login");

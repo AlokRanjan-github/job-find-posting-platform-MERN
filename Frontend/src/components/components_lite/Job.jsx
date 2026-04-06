@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
 import defaultCompanyPic from "../../assets/company.png";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import api from "@/lib/axios";
 import { JOB_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 import { setUser } from "@/redux/authSlice";
@@ -17,8 +17,8 @@ const Job = ({ job }) => {
   const { user } = useSelector((store) => store.auth);
   const [isSaved, setIsSaved] = useState(
     user?.profile?.savedJobs?.some((savedJob) =>
-      typeof savedJob === 'string' 
-        ? savedJob === job?._id 
+      typeof savedJob === 'string'
+        ? savedJob === job?._id
         : savedJob?._id === job?._id
     ) || false
   );
@@ -32,9 +32,7 @@ const Job = ({ job }) => {
 
   const saveJobHandler = async () => {
     try {
-      const res = await axios.get(`${JOB_API_ENDPOINT}/saved/${job?._id}`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`${JOB_API_ENDPOINT}/saved/${job?._id}`);
       if (res.data.success) {
         setIsSaved(res.data.action === "saved");
         toast.success(res.data.message);

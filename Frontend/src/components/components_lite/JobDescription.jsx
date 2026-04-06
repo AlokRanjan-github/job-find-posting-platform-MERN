@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "@/lib/axios";
 import { APPLICATION_API_ENDPOINT, JOB_API_ENDPOINT } from "@/utils/data";
 import { setSingleJob } from "@/redux/jobSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 function JobDescription() {
   const { user } = useSelector((store) => store.auth);
   const { singleJob } = useSelector((store) => store.job);
-  
+
   const params = useParams();
   const jobId = params.id;
 
@@ -25,9 +25,8 @@ function JobDescription() {
   const dispatch = useDispatch();
   const applyJobHandler = async () => {
     try {
-      const res = await axios.get(
-        `${APPLICATION_API_ENDPOINT}/apply/${jobId}`,
-        { withCredentials: true }
+      const res = await api.get(
+        `${APPLICATION_API_ENDPOINT}/apply/${jobId}`
       );
       console.log(res);
       if (res.data.success) {
@@ -49,9 +48,7 @@ function JobDescription() {
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
-        const res = await axios.get(`${JOB_API_ENDPOINT}/get/${jobId}`, {
-          withCredentials: true,
-        });
+        const res = await api.get(`${JOB_API_ENDPOINT}/get/${jobId}`);
         if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
           setIsApplied(
@@ -89,11 +86,10 @@ function JobDescription() {
         <Button
           onClick={isApplied ? null : applyJobHandler}
           disabled={isApplied}
-          className={`rounded-lg ${
-            isApplied
+          className={`rounded-lg ${isApplied
               ? "bg-gray-600 cursor-not-allowed"
               : "bg-[#7209B7] hover:bg-[#56088a]"
-          }`}
+            }`}
         >
           {isApplied ? "Already Applied" : "Apply Now"}{" "}
         </Button>

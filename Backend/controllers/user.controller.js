@@ -8,7 +8,7 @@ import path from "path";
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
-    
+
     if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(400).json({
         message: "Missing required fields",
@@ -20,9 +20,9 @@ export const register = async (req, res) => {
     let profilePhoto = "";
 
     if (file) {
-        const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-        profilePhoto = cloudResponse.secure_url;
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      profilePhoto = cloudResponse.secure_url;
     }
 
     const user = await User.findOne({ email });
@@ -116,11 +116,13 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: "Strict",
+        sameSite: "none",
+        secure: true,
       })
       .json({
         message: `Welcome Back ${user.fullname}`,
         user: sanitizedUser,
+        token,
         success: true,
       });
   } catch (error) {
@@ -149,16 +151,16 @@ export const updateprofile = async (req, res) => {
     const fileUri = getDataUri(file);
 
     // Extract file extension and name
-    const originalName = file.originalname; 
-    const extension = path.extname(originalName); 
-    const baseName = path.basename(originalName, extension); 
+    const originalName = file.originalname;
+    const extension = path.extname(originalName);
+    const baseName = path.basename(originalName, extension);
 
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
       resource_type: "raw",
       access_mode: "public",
       folder: "resumes",
       type: "upload",
-      public_id: `${baseName}${extension}`, 
+      public_id: `${baseName}${extension}`,
     });
 
     const userId = req.id; // middleware authentication
@@ -212,7 +214,7 @@ export const updateprofile = async (req, res) => {
 };
 export const logout = async (req, res) => {
   try {
-    return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+    return res.status(200).cookie("token", "", { maxAge: 0, sameSite: "none", secure: true }).json({
       message: "LoggedOut Successfully !",
       success: true,
     });
